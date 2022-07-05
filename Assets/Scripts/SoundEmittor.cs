@@ -25,7 +25,7 @@ public class SoundEmittor : MonoBehaviour
             Collider[] _colliders= Physics.OverlapSphere(transform.position, _soundRadius);                                     //can also define as var for shorthand and is used to return any data type
             foreach (var col in _colliders)
             {
-                if (col.TryGetComponent(out EnemeyController enemyController))
+                if (col.TryGetComponent(out EnemyController enemyController))
                 {
                     enemyController.InvestigatePoint(transform.position);
                 }
