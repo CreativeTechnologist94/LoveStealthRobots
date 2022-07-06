@@ -8,9 +8,7 @@ public class EnemyController : MonoBehaviour
     enum EnemyState
     {
         Patrol = 0,
-        Investigate = 1,
-        FindAssistance = 2,
-        Idle = 3
+        Investigate = 1
     }
     
     [SerializeField] private NavMeshAgent _agent;
@@ -26,8 +24,6 @@ public class EnemyController : MonoBehaviour
     private bool _forwardAlongPath = true;
     private Vector3 _investigationPoint;
     private float _waitTimer = 0f;
-    private GameObject _closestEnemy; 
-    private EnemyController closestEnemyController;
 
     void Start()
     {
@@ -40,12 +36,7 @@ public class EnemyController : MonoBehaviour
         {
             InvestigatePoint(_fov.visibleObjects[0].position);
         }
-
-        if (_state == EnemyState.Idle)
-        {
-            Debug.Log(transform.gameObject.name+ " is idle");
-        }
-        else if (_state == EnemyState.Patrol)
+        if (_state == EnemyState.Patrol)
         {
             UpdatePatrol();
         }
@@ -53,65 +44,15 @@ public class EnemyController : MonoBehaviour
         {
             UpdateInvestigate();
         }
-        else if (_state == EnemyState.FindAssistance)
-        {
-            Debug.Log("Find Assistance state activated");
-            UpdateFindAssistance();
-        }
        
-    }
-
-    private void UpdateFindAssistance()
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 15f);
-
-        if (hitColliders != null && hitColliders.Length > 0)
-        {
-            Debug.Log("Found collider in sphere");
-            for (int i = 0; i < hitColliders.Length; i++)
-            {
-                if (hitColliders[i].gameObject.TryGetComponent(out Creature targetCreature) && hitColliders[i].transform!=this.transform)
-                {
-                    Debug.Log("It's a creature and not self");
-                    
-                    if (targetCreature.team == Creature.Team.Enemy) 
-                    {
-                        _closestEnemy = hitColliders[i].gameObject;
-                        Debug.Log("Found closest enemy - " + _closestEnemy.name);
-                        _agent.SetDestination(_closestEnemy.transform.position);
-                        if (Vector3.Distance(transform.position,_closestEnemy.transform.position) < _threshold)
-                        {
-                            _state = EnemyState.Investigate;
-                            _agent.SetDestination(_investigationPoint);
-                            
-                            closestEnemyController = _closestEnemy.GetComponent<EnemyController>();
-                            closestEnemyController._state = EnemyState.Investigate;
-                            var _closestEnemyagent = _closestEnemy.GetComponent<NavMeshAgent>();
-                            _closestEnemyagent.SetDestination(_investigationPoint);
-                        }
-                        
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     public void InvestigatePoint(Vector3 investigatePoint)                                             //runs once sometimes, if it's audio trigger just go and investigate it
     {
-        _investigationPoint = investigatePoint; 
-        
-        float randValue = Random.value;
-        Debug.Log("Random value = "+ randValue);
-        if (randValue < .5f)
-        {
-            _state = EnemyState.Investigate;
-            _agent.SetDestination(_investigationPoint);
-        }
-        else
-        {
-            _state = EnemyState.FindAssistance;
-        }
+        //Debug.Log("Investigating Point Trigger");
+        _state = EnemyState.Investigate;
+        _investigationPoint = investigatePoint;
+        _agent.SetDestination(_investigationPoint);
     }
 
     private void UpdateInvestigate()                                                                    //if hes chasing us, runs all the time
