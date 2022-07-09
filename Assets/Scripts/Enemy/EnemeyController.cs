@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class EnemeyController : MonoBehaviour
 {
@@ -12,12 +13,17 @@ public class EnemeyController : MonoBehaviour
     }
     
     [SerializeField] private NavMeshAgent _agent;
+    [SerializeField] private Animator _animator;
     [SerializeField] private float _threshold = 0.5f;
     [SerializeField] private float _waitTime = 2f;
     [SerializeField] private PatrolRoute _patrolRoute;                                           //serialize our monobehvior we made, will only take PatrolRoute
     [SerializeField] private FieldOfView _fov;
     [SerializeField] private EnemyState _state = EnemyState.Patrol;
 
+    public UnityEvent<Transform> onPlayerFound;
+    public UnityEvent onInvestigate;
+    public UnityEvent onReturnToPatrol;
+    
     private bool _moving = false;
     private Transform _currentPoint;
     private int _routeIndex = 0;
@@ -32,9 +38,11 @@ public class EnemeyController : MonoBehaviour
     
     void Update()
     {
+        _animator.SetFloat("Speed", _agent.velocity.magnitude);
+        
         if (_fov.visibleObjects.Count > 0)
         {
-            InvestigatePoint(_fov.visibleObjects[0].position);
+            PlayerFound(_fov.visibleObjects[0].position);
         }
         if (_state == EnemyState.Patrol)
         {
@@ -50,9 +58,23 @@ public class EnemeyController : MonoBehaviour
     public void InvestigatePoint(Vector3 investigatePoint)                                             //runs once sometimes, if it's audio trigger just go and investigate it
     {
         //Debug.Log("Investigating Point Trigger");
+        SetInvestigationPoint(investigatePoint);
+
+        onInvestigate.Invoke();
+    }
+
+    private void SetInvestigationPoint(Vector3 investigatePoint)
+    {
         _state = EnemyState.Investigate;
         _investigationPoint = investigatePoint;
         _agent.SetDestination(_investigationPoint);
+    }
+
+    private void PlayerFound(Vector3 investigatePoint)
+    {
+        SetInvestigationPoint(investigatePoint);
+        
+        onPlayerFound.Invoke(_fov.creature.head);
     }
 
     private void UpdateInvestigate()                                                                    //if hes chasing us, runs all the time
@@ -74,6 +96,8 @@ public class EnemeyController : MonoBehaviour
         _state = EnemyState.Patrol;
         _waitTimer = 0;
         _moving = false;
+        
+        onReturnToPatrol.Invoke();
     }
     
     private void UpdatePatrol()

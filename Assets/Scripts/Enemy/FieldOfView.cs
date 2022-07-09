@@ -9,11 +9,11 @@ using UnityEngine.XR;
 public class FieldOfView : MonoBehaviour
 {
     public List<Transform> visibleObjects;
+    public Creature creature;     
     
     [SerializeField] private Color _gizmoColor = Color.red;
     [SerializeField] private float _viewRadius = 6f;
-    [SerializeField] private float _viewAngle = 30f;
-    [SerializeField] private Creature _creature;                                  //exposing creature to get head height
+    [SerializeField] private float _viewAngle = 30f; //exposing creature to get head height
     [SerializeField] private LayerMask _blockingLayers;                           // exposing layer mask to set blocking layers
 
     // Start is called before the first frame update
@@ -32,13 +32,13 @@ public class FieldOfView : MonoBehaviour
         {
             if (!target.TryGetComponent(out Creature targetCreature)) continue;                          // define a targetCreature of class Creature //continue exits the loop //return exits the function
 
-            if (_creature.team == targetCreature.team) continue;
+            if (creature.team == targetCreature.team) continue;
             
             Vector3 directionToTarget = (target.transform.position - transform.position).normalized;     //normalized direction vector FROM target position TO enemy position
             
             if (Vector3.Angle(transform.forward, directionToTarget) < _viewAngle)
             {
-                Vector3 headPos = _creature.head.position;
+                Vector3 headPos = creature.head.position;
                 Vector3 targetHeadPos = targetCreature.head.position;
 
                 Vector3 dirToTargetHead = (targetHeadPos - headPos).normalized;

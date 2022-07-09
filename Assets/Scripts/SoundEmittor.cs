@@ -8,15 +8,27 @@ public class SoundEmittor : MonoBehaviour
 {
     [SerializeField] private float _soundRadius = 5f;
     [SerializeField] private float _impulseThreshold = 1f;
+
+    private float _collisionTimer = 0f;
     private AudioSource _audioSource;
-    
+
     void Start()
     {
         _audioSource = GetComponent<AudioSource>();
     }
-    
+
+    private void Update()
+    {
+        if (_collisionTimer < 2f)
+        {
+            _collisionTimer += Time.deltaTime;
+        }
+    }
+
     private void OnCollisionEnter(Collision other)
     {
+        if (_collisionTimer < 2f) return;
+        
         if (other.impulse.magnitude > _impulseThreshold || other.gameObject.CompareTag("Player"))
         {
             _audioSource.Play();
