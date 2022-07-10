@@ -2,12 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(AudioSource))]
 public class SoundEmittor : MonoBehaviour
 {
     [SerializeField] private float _soundRadius = 5f;
     [SerializeField] private float _impulseThreshold = 1f;
+
+    public UnityEvent onEmitSound;
 
     private float _collisionTimer = 0f;
     private AudioSource _audioSource;
@@ -32,6 +35,8 @@ public class SoundEmittor : MonoBehaviour
         if (other.impulse.magnitude > _impulseThreshold || other.gameObject.CompareTag("Player"))
         {
             _audioSource.Play();
+            
+            onEmitSound.Invoke();
             
             Debug.Log("Sound Emittor Collided with"+ other.gameObject.name);
             Collider[] _colliders= Physics.OverlapSphere(transform.position, _soundRadius);                                     //can also define as var for shorthand and is used to return any data type

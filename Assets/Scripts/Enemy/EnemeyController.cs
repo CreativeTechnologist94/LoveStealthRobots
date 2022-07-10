@@ -30,6 +30,7 @@ public class EnemeyController : MonoBehaviour
     private bool _forwardAlongPath = true;
     private Vector3 _investigationPoint;
     private float _waitTimer = 0f;
+    private bool _playerFound = false;
 
     void Start()
     {
@@ -72,9 +73,13 @@ public class EnemeyController : MonoBehaviour
 
     private void PlayerFound(Vector3 investigatePoint)
     {
+        if (_playerFound) return;
+        
         SetInvestigationPoint(investigatePoint);
         
         onPlayerFound.Invoke(_fov.creature.head);
+
+        _playerFound = true;
     }
 
     private void UpdateInvestigate()                                                                    //if hes chasing us, runs all the time
