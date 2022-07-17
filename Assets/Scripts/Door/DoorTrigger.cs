@@ -11,15 +11,25 @@ public class DoorTrigger : MonoBehaviour
     {
         if (other.GetComponent<DoorInteractor>())                   //if other has the component DoorInteractor
         {
-            door.SetActive(false);
+            OpenDoor();
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    protected virtual void OnTriggerExit(Collider other)           //will allow to override in a new script
     {
         if (other.GetComponent<DoorInteractor>())                   
         {
-            door.SetActive(true);
+            CloseDoor();
         }
+    }
+
+    protected void OpenDoor()
+    {
+        door.SetActive(false);
+    }
+
+    protected void CloseDoor()
+    {
+        door.SetActive(true);
     }
 }
