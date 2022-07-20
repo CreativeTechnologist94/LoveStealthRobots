@@ -8,6 +8,8 @@ TagManager:
   - Grabbable
   - KeyCard
   - Resetter
+  - target
+  - bullet
   layers:
   - Default
   - TransparentFX
