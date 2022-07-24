@@ -65,11 +65,11 @@ public class GameEventManager : MonoBehaviour
         
         _isFadingIn = true;
         
-        _failedPanel.SetActive(true);
+        //_failedPanel.SetActive(true);
         
-        _fpController.CinemachineCameraTarget.transform.LookAt(enemyThatFoundPlayer);
+        //_fpController.CinemachineCameraTarget.transform.LookAt(enemyThatFoundPlayer); 
         
-        DeactivateInput();
+        //DeactivateInput();
         PlayBGM(_caughtMusic);
     }
 
@@ -109,7 +109,7 @@ public class GameEventManager : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     
     // Update is called once per frame

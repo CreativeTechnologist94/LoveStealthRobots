@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 //using System.Threading.Tasks.Dataflow;
 using UnityEditor;
 using UnityEngine;
@@ -13,8 +14,8 @@ public class FieldOfView : MonoBehaviour
     
     [SerializeField] private Color _gizmoColor = Color.red;
     [SerializeField] private float _viewRadius = 6f;
-    [SerializeField] private float _viewAngle = 30f; //exposing creature to get head height
-    [SerializeField] private LayerMask _blockingLayers;                           // exposing layer mask to set blocking layers
+    [SerializeField] private float _viewAngle = 30f;                                                   //exposing creature to get head height
+    [SerializeField] private LayerMask _blockingLayers;                                                // exposing layer mask to set blocking layers
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +31,11 @@ public class FieldOfView : MonoBehaviour
         Collider[] targetInViewRadius = Physics.OverlapSphere(transform.position, _viewRadius);          //Collider[] Returns an array with all colliders touching or inside the sphere
         foreach (Collider target in targetInViewRadius)                                                  //define target of class Collider
         {
-            if (!target.TryGetComponent(out Creature targetCreature)) continue;                          // define a targetCreature of class Creature //continue exits the loop //return exits the function
+            if (!target.TryGetComponent(out Creature targetCreature))                                    // define a targetCreature of class Creature //continue exits the loop //return exits the function
+            {
+                targetCreature = target.GetComponentInParent<Creature>();
+                if(!targetCreature) continue;
+            }                          
 
             if (creature.team == targetCreature.team) continue;
             
@@ -56,6 +61,7 @@ public class FieldOfView : MonoBehaviour
         }
     }
 
+    #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         Gizmos.color = _gizmoColor;
@@ -69,5 +75,5 @@ public class FieldOfView : MonoBehaviour
         Handles.DrawLine(transform.position, transform.position + (lineA * _viewRadius));                   // left and right vectors are normalized vectors( of unit 1)
         Handles.DrawLine(transform.position, transform.position + (lineB * _viewRadius));    
     }
-    
+    #endif
 }

@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+//using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Analytics;
 using UnityEngine.Events;
+using UnityEngine.Rendering.Universal;
 
 public class EnemeyController : MonoBehaviour
 {
@@ -43,7 +46,8 @@ public class EnemeyController : MonoBehaviour
         
         if (_fov.visibleObjects.Count > 0)
         {
-            PlayerFound(_fov.visibleObjects[0].position);
+            Debug.Log(_fov.visibleObjects[0]);
+            PlayerFound(_fov.visibleObjects[0].position);  
         }
         if (_state == EnemyState.Patrol)
         {
@@ -77,7 +81,8 @@ public class EnemeyController : MonoBehaviour
         
         SetInvestigationPoint(investigatePoint);
         
-        onPlayerFound.Invoke(_fov.creature.head);
+        Debug.Log("The enemy creature's head is: "+ _fov.creature.head);
+        onPlayerFound.Invoke(_fov.creature.head);  
 
         _playerFound = true;
     }
