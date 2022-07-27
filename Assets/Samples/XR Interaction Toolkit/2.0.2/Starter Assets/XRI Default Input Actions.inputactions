@@ -507,6 +507,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Teleport Translation Activate",
+                    "type": "Button",
+                    "id": "3a381998-0e31-43c6-920b-63c0f2204a9d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Teleport Translation Cancel",
+                    "type": "Button",
+                    "id": "91022b0d-6c20-4990-9bf7-5482278fc1e0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -562,6 +580,28 @@
                     "processors": "StickDeadzone",
                     "groups": "Continuous Move",
                     "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d154ccc7-f954-46bd-adec-49716b02cc84",
+                    "path": "<OculusTouchController>/gripPressed",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Generic XR Controller;Noncontinuous Move",
+                    "action": "Teleport Translation Activate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c96973b7-3e95-40b3-aeaa-d40280f22a8c",
+                    "path": "<OculusTouchController>/gripPressed",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "Generic XR Controller;Noncontinuous Move",
+                    "action": "Teleport Translation Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
