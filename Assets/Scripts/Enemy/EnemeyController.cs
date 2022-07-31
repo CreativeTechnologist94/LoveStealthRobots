@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Forms.VisualStyles;
 //using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,13 +13,15 @@ public class EnemeyController : MonoBehaviour
     enum EnemyState
     {
         Patrol = 0,
-        Investigate = 1
+        Investigate = 1,
+        Stunned = 2
     }
     
     [SerializeField] private NavMeshAgent _agent;
     [SerializeField] private Animator _animator;
     [SerializeField] private float _threshold = 0.5f;
     [SerializeField] private float _waitTime = 2f;
+    [SerializeField] private float _stunnedTime = 3f;
     [SerializeField] private PatrolRoute _patrolRoute;                                           //serialize our monobehvior we made, will only take PatrolRoute
     [SerializeField] private FieldOfView _fov;
     [SerializeField] private EnemyState _state = EnemyState.Patrol;
@@ -26,6 +29,7 @@ public class EnemeyController : MonoBehaviour
     public UnityEvent<Transform> onPlayerFound;
     public UnityEvent onInvestigate;
     public UnityEvent onReturnToPatrol;
+    public UnityEvent onStunned;
     
     private bool _moving = false;
     private Transform _currentPoint;
@@ -34,6 +38,7 @@ public class EnemeyController : MonoBehaviour
     private Vector3 _investigationPoint;
     private float _waitTimer = 0f;
     private bool _playerFound = false;
+    private float _stunnedTimer = 0f;
 
     void Start()
     {
@@ -57,7 +62,25 @@ public class EnemeyController : MonoBehaviour
         {
             UpdateInvestigate();
         }
+        else if (_state == EnemyState.Stunned)
+        {
+            _stunnedTimer += Time.deltaTime;
+            if (_stunnedTimer >= _stunnedTime)
+            {
+                ReturnToPatrol();
+                _animator.SetBool("Stunned", false);
+            }
+        }
        
+    }
+
+    public void SetStunned()
+    {
+        _animator.SetBool("Stunned", true);
+        _stunnedTimer = 0f;
+        _state = EnemyState.Stunned;
+        _agent.SetDestination(transform.position);                                                     //stop him from moving     
+        onStunned.Invoke();
     }
 
     public void InvestigatePoint(Vector3 investigatePoint)                                             //runs once sometimes, if it's audio trigger just go and investigate it
