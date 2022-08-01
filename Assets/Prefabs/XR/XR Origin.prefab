@@ -1521,6 +1521,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7049100837ebf54ebc5fc6665f7be1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _leftHandTrandform: {fileID: 0}
+  _rightHandTransform: {fileID: 0}
   _rotationReference: {fileID: 8018838647874853907}
 --- !u!1001 &1724386098012221732
 PrefabInstance:
