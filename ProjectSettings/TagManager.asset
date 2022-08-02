@@ -8,6 +8,7 @@ TagManager:
   - Grabbable
   - KeyCard
   - Ammo
+  - Gravitator
   layers:
   - Default
   - TransparentFX
@@ -21,8 +22,8 @@ TagManager:
   - Grab
   - Hand
   - Teleporter
-  - 
-  - 
+  - Bodies
+  - Magnet
   - 
   - 
   - 
