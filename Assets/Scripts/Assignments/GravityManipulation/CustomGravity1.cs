@@ -1,25 +1,35 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Numerics;
 using System.Windows.Forms.VisualStyles;
+using Unity.VisualScripting;
 using UnityEngine;
+using Vector3 = UnityEngine.Vector3;
 
 public class CustomGravity1 : MonoBehaviour
 {
-    [SerializeField] private float multiplier = 1;
-    [SerializeField] private Transform _gravityPos;
+    [SerializeField] private GameObject _leftPlunger;
+    [SerializeField] private GameObject _rightPlunger;
+    [SerializeField] private Transform _leftgravityPos;
+    [SerializeField] private Transform _rightgravityPos;
+    [SerializeField] private float multiplier = 0.02f; //75
+    
     private Body[] _bodies;
-    private float _g;
-    private GravityManipulation _gravityManipulation;
-    private float _mass;
+    private GravityManipulation _leftgravityManipulation;
+    private GravityManipulation _rightgravityManipulation;
+    private Vector3 _lastpos ;
+    private Vector3 centerPos;
+
+    public bool pushactive;
+    public bool pullactive;
+    public bool bothactive;
 
     // Start is called before the first frame update
     private void Start()
     {
-        _g = 6.67f * Mathf.Pow(10, -11);
-        _mass = GetComponent<Rigidbody>().mass;
         _bodies = FindObjectsOfType<Body>();
-        _gravityManipulation = GetComponent<GravityManipulation>();
+        _leftgravityManipulation = _leftPlunger.GetComponent<GravityManipulation>();
+        _rightgravityManipulation = _rightPlunger.GetComponent<GravityManipulation>();
+        
+        _lastpos = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -27,40 +37,48 @@ public class CustomGravity1 : MonoBehaviour
     {
         foreach (var item in _bodies)
         {
-            if (_gravityManipulation.pullActive || _gravityManipulation.pushActive)
+            if ( _leftgravityManipulation.pushActive && !_rightgravityManipulation.pullActive)
             {
-                item.rigidBody.useGravity = false;
-                Vector3 force = CalculateForce(item);
-                ApplyForce(item, force);
+                pushactive = false;
+                pullactive = true;
+                bothactive = false;
+                
+                Vector3 dir = (item.transform.position - _leftgravityPos.position).normalized;
+                item.rigidBody.velocity = dir * (multiplier * Time.fixedDeltaTime);
+                //Vector3 force = (item.transform.position - _leftgravityPos.position).normalized * (Time.fixedDeltaTime * multiplier);
+                //item.rigidBody.AddForce(force, ForceMode.Force);
             }
-            else
+            else if (_rightgravityManipulation.pullActive && !_leftgravityManipulation.pushActive)
             {
-                item.rigidBody.useGravity = true;
+                pullactive = true;
+                pushactive = false;
+                bothactive = false;
+                
+                Vector3 dir = (_rightgravityPos.position - item.transform.position).normalized;
+                item.rigidBody.velocity = dir * (multiplier * Time.fixedDeltaTime);
+                //Vector3 force = (_rightgravityPos.position - item.transform.position).normalized * (Time.fixedDeltaTime * multiplier);
+                //item.rigidBody.AddForce(force, ForceMode.Force);
+            }
+            else if (_rightgravityManipulation.pullActive && _leftgravityManipulation.pushActive)
+            {
+                pullactive = false;
+                pushactive = false;
+                bothactive = true;
+                
+                centerPos = (_rightgravityPos.position + _leftgravityPos.position) / 2;
+                Vector3 dir = (centerPos - _lastpos).normalized;
+                item.rigidBody.velocity = dir * (multiplier * Time.fixedDeltaTime);
+                
+            }
+            else 
+            {
+                pushactive = false;
+                pullactive = false;
+                bothactive = false;
             }
         }
-    }
-
-    private Vector3 CalculateForce(Body body)
-    {
-        float distance = Vector3.Distance(_gravityPos.position, body.transform.position);
-        float distanceSqr = distance * distance;
-        float force = _g * _mass * body.mass / distanceSqr;
-        force *= multiplier;
-        return force * (_gravityPos.position - body.transform.position).normalized;
+        _lastpos = centerPos;
     }
     
-    private void ApplyForce(Body body, Vector3 force)
-    {
-        if(_gravityManipulation.plungerType == PlungerType.Pull)
-        {
-            Vector3 acceleration = force / body.mass;
-            body.rigidBody.AddForce(acceleration, ForceMode.Acceleration);
-        }
-        else if(_gravityManipulation.plungerType == PlungerType.Push)
-        {
-            Vector3 acceleration = force / body.mass;
-            body.rigidBody.AddForce(-acceleration, ForceMode.Acceleration);
-        }
-    }
-    
+   
 }

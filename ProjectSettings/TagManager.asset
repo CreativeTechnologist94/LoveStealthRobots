@@ -9,6 +9,7 @@ TagManager:
   - KeyCard
   - Ammo
   - Gravitator
+  - Floor
   layers:
   - Default
   - TransparentFX
