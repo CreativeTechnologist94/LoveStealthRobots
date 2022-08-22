@@ -12,7 +12,7 @@ public class Handedness : MonoBehaviour
     [SerializeField] private GameObject[] leftHandedObjects;
     [SerializeField] private GameObject[] rightHandedObjects;
 
-    private void Awake()
+    private void Start()
     {
         handed = _gameManager.handedness;
         

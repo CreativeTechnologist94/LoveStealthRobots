@@ -43,6 +43,8 @@ public class EnemeyController : MonoBehaviour
     void Start()
     {
         _currentPoint = _patrolRoute.route[_routeIndex];
+
+        GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
     }
     
     void Update()

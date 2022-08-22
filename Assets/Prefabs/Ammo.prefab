@@ -424,6 +424,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handed: 0
+  _gameManager: {fileID: 0}
   leftHandedObjects:
   - {fileID: 3317101087247638110}
   rightHandedObjects:
