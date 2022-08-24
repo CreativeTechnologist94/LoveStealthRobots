@@ -20,7 +20,7 @@ public class Handedness : MonoBehaviour
         {
             foreach (var obj in leftHandedObjects)
             {
-                obj.SetActive(true);
+                obj.SetActive(false);
             }
             
             foreach (var obj in rightHandedObjects)
@@ -37,7 +37,7 @@ public class Handedness : MonoBehaviour
             
             foreach (var obj in rightHandedObjects)
             {
-                obj.SetActive(true);
+                obj.SetActive(false);
             }
         }
     }
