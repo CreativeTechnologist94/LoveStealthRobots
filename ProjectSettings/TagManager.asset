@@ -10,6 +10,8 @@ TagManager:
   - Resetter
   - target
   - bullet
+  - cube
+  - trigger
   layers:
   - Default
   - TransparentFX
@@ -22,7 +24,7 @@ TagManager:
   - Player
   - Grab
   - Hand
-  - 
+  - Cube
   - 
   - 
   - 

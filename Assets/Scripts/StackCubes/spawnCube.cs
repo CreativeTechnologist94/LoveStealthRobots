@@ -1,113 +1,97 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class spawnCube : MonoBehaviour
 {
-    [SerializeField] private InputActionReference _spawnActionReference;
-    [SerializeField] private InputActionReference _LeftGripHoldActionReference;
-    [SerializeField] private InputActionReference _RightGripHoldActionReference;
-    [SerializeField] private InputActionReference _LeftGripReleaseActionReference;
-    [SerializeField] private InputActionReference _RightGripReleaseActionReference;
+    [SerializeField] private InputActionReference _SpawnPressActionReference;
+    [SerializeField] private InputActionReference _SpawnReleaseActionReference;
 
     [SerializeField] private GameObject _cubePrefab;
     [SerializeField] private XRBaseControllerInteractor _RHController;
     [SerializeField] private XRBaseControllerInteractor _LHController;
-
-    private GameObject _spawnedCube;
-    public bool _isLeftPressed = false;
+    
+   
+    
     public bool _isRightPressed = false;
-    public bool _isLeftReleased = false;
     public bool _isRightReleased = false;
-    private bool _check = false;
-    private bool _cubeActive = false;
-    private float initialGrabDistance;
-    private float currentGrabDistance;
 
+    public float totalVolume = 0f;
+    
+    private float currentDistance;
+    private float spawnDistance;
+    private Vector3 initialObjectScale;
+    
+    private GameObject _spawnedCube;
 
     // Start is called before the first frame update
     void Start()
     {
-        _spawnActionReference.action.performed += OnSpawn;
-        _LeftGripHoldActionReference.action.performed += OnLeftPress;
-        _RightGripHoldActionReference.action.performed += OnRightPress;
-        _LeftGripReleaseActionReference.action.performed += OnLeftRelease;
-        _RightGripReleaseActionReference.action.performed += OnRightRelease;
+        _SpawnPressActionReference.action.performed += OnRightPress;
+        _SpawnReleaseActionReference.action.performed += OnRightRelease;
     }
-
+    
+    private void Update()
+    {
+        if (_isRightPressed)
+        {
+            _spawnedCube.transform.position = Vector3.Lerp(_LHController.transform.position, _RHController.transform.position, 0.5f);
+            ScaleCube();
+            Debug.Log(_spawnedCube.transform.localScale);
+        }
+    }
+    
     private void OnRightPress(InputAction.CallbackContext obj)
     {
         _isRightReleased = false;
+        IntantiateCube();
         _isRightPressed = true;
     }
-
-    private void OnLeftPress(InputAction.CallbackContext obj)
-    {
-        _isLeftReleased =false;
-        _isLeftPressed = true;
-    }
-
+    
     private void OnRightRelease(InputAction.CallbackContext obj)
     {
         _isRightPressed = false;
         _isRightReleased = true;
-        if(_cubeActive) ReleaseCube();
-    }
-
-    private void OnLeftRelease(InputAction.CallbackContext obj)
-    {
-        _isLeftPressed = false;
-        _isLeftReleased = true;
-        if(_cubeActive) ReleaseCube();
+        ReleaseCube();
     }
     
-    private void OnSpawn(InputAction.CallbackContext obj)
+    private void IntantiateCube()
     {
-        if (_cubeActive) return;
-        if (_isLeftPressed && _isRightPressed)
-        {
-            _check = true;
-            initialGrabDistance = Vector3.Distance(_LHController.transform.position, _RHController.transform.position);
-            _cubeActive = true;
-            Vector3 spawnPosition = _RHController.transform.position + (Vector3.back * 0.1f) + (Vector3.left * 0.15f);
-            _spawnedCube = Instantiate(_cubePrefab,  spawnPosition, _RHController.transform.rotation);
-        }
-    }
-
-    private void Update()
-    {
-        if(!_check) return;
-        if (!_cubeActive) return;
+        spawnDistance =  Vector3.Distance(_LHController.transform.position, _RHController.transform.position);
         
-        _spawnedCube.transform.position = _RHController.transform.position + (Vector3.back * 0.1f) + (Vector3.left * 0.15f);;
-        _spawnedCube.transform.rotation = _RHController.transform.rotation;
+        Vector3 spawnPosition = Vector3.Lerp(_LHController.transform.position, _RHController.transform.position, 0.5f) + (Vector3.back * 0.1f);
+        _spawnedCube = Instantiate(_cubePrefab,  spawnPosition, quaternion.identity);
 
-        ScaleCube();
+        initialObjectScale = _spawnedCube.transform.localScale;
+
     }
-
-    private void ReleaseCube()
-    {
-        if (!_cubeActive) return;
-        _spawnedCube.transform.GetComponent<Rigidbody>().isKinematic = false;
-        _cubeActive = false;
-    }
-
     private void ScaleCube()
     {
-        if (!_cubeActive) return;
+        currentDistance = Vector3.Distance(_LHController.transform.position, _RHController.transform.position);
         
-        if (_isLeftPressed && _isRightPressed)
-        {
-            Vector3 initialObjectScale = _spawnedCube.transform.localScale;
-            currentGrabDistance = Vector3.Distance(_LHController.transform.position, _RHController.transform.position);
-            float p = currentGrabDistance / initialGrabDistance * 0.05f;
-            Vector3 newScale = new Vector3(Mathf.Clamp((p * initialObjectScale.x), 1.0f, 1.5f), Mathf.Clamp((p * initialObjectScale.y), 1.0f, 1.5f), Mathf.Clamp((p * initialObjectScale.z), 1.0f, 1.5f));
-            _spawnedCube.transform.localScale = newScale;
-        }
-        
+        float p = currentDistance / spawnDistance * 2f ;
+        //Vector3 newScale = new Vector3(Mathf.Clamp((p * initialObjectScale.x), 0.1f, 10f), Mathf.Clamp((p * initialObjectScale.y), 0.1f, 10f), Mathf.Clamp((p * initialObjectScale.z), 0.1f, 10f));
+        Vector3 newScale = new Vector3(p * initialObjectScale.x, p * initialObjectScale.y, p * initialObjectScale.z );
+        _spawnedCube.transform.localScale = newScale;
+
     }
+    
+    private void ReleaseCube()
+    {
+        _spawnedCube.transform.GetComponent<Rigidbody>().isKinematic = false;
+
+        float volume = _spawnedCube.transform.localScale.x * _spawnedCube.transform.localScale.y *
+                       _spawnedCube.transform.localScale.z;
+
+        totalVolume += volume;
+    }
+
+    
 }

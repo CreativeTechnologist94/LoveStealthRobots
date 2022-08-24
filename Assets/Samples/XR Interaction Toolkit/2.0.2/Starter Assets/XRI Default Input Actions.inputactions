@@ -278,24 +278,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "PressToScale_L",
-                    "type": "Button",
-                    "id": "c9f10cf5-0f6d-4e9e-b218-f97f9abf30a5",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "LeftScaleRelease",
-                    "type": "Button",
-                    "id": "edfb0ed8-dac9-441c-a281-1345ef4185f1",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -474,28 +456,6 @@
                     "action": "Translate Anchor",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "255f9495-54bc-4092-acbb-92b46dbd48d3",
-                    "path": "<OculusTouchController>{LeftHand}/gripPressed",
-                    "interactions": "Hold",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PressToScale_L",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "aff8b211-899c-4347-9d0b-cba3e33620c8",
-                    "path": "<OculusTouchController>{LeftHand}/gripPressed",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "LeftScaleRelease",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         },
@@ -838,7 +798,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Spawn",
+                    "name": "SpawnPress",
                     "type": "Button",
                     "id": "385a0441-6efe-41e5-97cb-cb3880550e69",
                     "expectedControlType": "Button",
@@ -847,18 +807,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "PresstoScale_R",
+                    "name": "SpawnRelease",
                     "type": "Button",
-                    "id": "14141db0-a8c5-4aa4-a9d4-bb42c75ffa3a",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "RightScaleRelease",
-                    "type": "Button",
-                    "id": "35cb111f-5e67-4cc8-a4b3-f1fcffc29bcd",
+                    "id": "ba2177a0-6314-4aab-abaa-21e4c733914c",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -988,6 +939,17 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "",
+                    "id": "4434cfb7-83e5-4b72-8c4b-d5badcfc8558",
+                    "path": "<XRController>{RightHand}/triggerPressed",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpawnPress",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
                     "name": "2D Vector",
                     "id": "a4b1434f-f204-49c4-bcea-c25e321e93eb",
                     "path": "2DVector(mode=2)",
@@ -1044,34 +1006,12 @@
                 },
                 {
                     "name": "",
-                    "id": "4434cfb7-83e5-4b72-8c4b-d5badcfc8558",
-                    "path": "<OculusTouchController>{RightHand}/triggerPressed",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Spawn",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4a63dc97-edd1-43ed-8342-1fd44ae19f58",
-                    "path": "<OculusTouchController>{RightHand}/gripPressed",
-                    "interactions": "Hold",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PresstoScale_R",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "62d2387a-d0bb-46ce-bd28-7a8d3685c2a3",
-                    "path": "<OculusTouchController>{RightHand}/gripPressed",
+                    "id": "824cb679-bba9-4b9d-b595-2f4406769a3a",
+                    "path": "<XRController>{RightHand}/triggerPressed",
                     "interactions": "Press(behavior=1)",
                     "processors": "",
                     "groups": "",
-                    "action": "RightScaleRelease",
+                    "action": "SpawnRelease",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
